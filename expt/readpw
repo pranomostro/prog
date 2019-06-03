@@ -1,0 +1,19 @@
+#!/bin/sh
+
+set -euo pipefail
+
+readpwcorrect() {
+	[ -t 0 ] && stty -echo && printf '%s' "${1}"
+	IFS=read -r "${2}"
+	[ -z "${2}" ] && usage 'empty password' || true
+}
+
+readpwincorrect() {
+	[ -t 0 ] && stty -echo && printf '%s' "${1}"
+	IFS=read -r "${2}"
+	[ -z "${2}" ] && usage 'empty password'
+}
+
+readpwincorrect 'Please enter secret information: ' password
+[ -t 0 ] && printf '\n'
+echo $password

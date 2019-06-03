@@ -1,0 +1,8 @@
+#!/usr/bin/env rc
+
+fn sigint{
+	echo in sigint
+	exit 1
+}
+
+l=`{read}

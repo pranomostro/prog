@@ -1,0 +1,21 @@
+#!/usr/bin/env rc
+
+if(test $#* -le 1){
+	echo 'ffstats cpm files' >[1=2]
+	exit 1
+}
+
+cpm=$1
+shift
+
+t=`{mktemp '/tmp/farbtest.XXXXXX'}
+
+for(i){
+	ffn=`{echo $i | sed 's/\(jpg\|jpeg\|png\)$/ff.'$cpm'/'}
+	sizes=`{stat --format'=%s' $i $ffn}
+	echo $i `{echo $sizes(2)'/'$sizes(1) | bc -l} >>$t
+}
+
+awk '{ print($2, $1) }' $t | sort -n
+
+rm $t

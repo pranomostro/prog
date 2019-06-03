@@ -1,0 +1,10 @@
+#!/usr/bin/env rc
+
+test -d leyfac || mkdir leyfac
+
+for(i in `{leyland -l 20000 | field 1}){
+	echo $i
+	factor $i >`{mktemp leyfac/lf.XXXXXXX} &;
+	while(test `{ps -A | grep factor | wc -l} -ge 4)
+		{ sleep 0.1 }
+}

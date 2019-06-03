@@ -1,0 +1,3 @@
+#!/usr/bin/env rc
+
+./wtf | sed 's/\.0\+//g' | awk '$1!=$2'

@@ -1,0 +1,8 @@
+use std
+
+const main={args : byte[:][:]
+	match std.slurp("-")
+	| `std.Err e: std.fatal("could not open -\n")
+	| `std.Ok d:
+	;;
+}

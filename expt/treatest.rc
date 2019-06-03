@@ -1,0 +1,45 @@
+#!/usr/bin/env rc
+
+while(true) {
+	echo '----------------------------------------------------------------------' >[1=2]
+
+	if(! tmpdir=`{mktemp -d '/tmp/test.XXXXXX'}) {
+		echo 'treat test: could not create temporary directory.' >[1=2]
+		exit 1
+	}
+	echo $tmpdir >[1=2]
+	if(! mkfifo $tmpdir/in.1 $tmpdir/in.2 $tmpdir/in.3 $tmpdir/emit.1 $tmpdir/emit.2 $tmpdir/emit.3) {
+		echo 'treat test: could not create fifos as intended.' >[1=2]
+		exit 2
+	}
+
+	for(i in `{seq 1 3})
+		if(! test -e $tmpdir/in.$i && test -e $tmpdir/emit.$i) {
+			echo 'treat test: did not find '$i' in $tmpdir.' >[1=2]
+			exit 3
+		}
+
+	ls $tmpdir >[1=2]
+
+	echo 'setting up middle man' >[1=2]
+
+	cat <$tmpdir/in.1 >$tmpdir/emit.1 &
+	cat <$tmpdir/in.2 >$tmpdir/emit.2 &
+	cat <$tmpdir/in.3 >$tmpdir/emit.3 &
+
+	echo 'setting up emitters' >[1=2]
+
+	cat $tmpdir/emit.1 >[1=2] &
+	cat $tmpdir/emit.2 >[1=2] &
+	cat $tmpdir/emit.3 >[1=2] &
+
+	echo 'setting up inputters' >[1=2]
+
+	echo a >$tmpdir/in.1
+	echo b >$tmpdir/in.2
+	echo c >$tmpdir/in.3
+
+	wait
+
+	rm -r $tmpdir
+}

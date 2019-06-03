@@ -1,0 +1,14 @@
+#!/usr/bin/env rc
+
+if(test $#* -le 1){
+	echo 'star2ff cpm files' >[1=2]
+	exit 1
+}
+
+cpm=$1
+shift
+
+for(i){
+	ffn=`{echo $i | sed 's/\(jpg\|jpeg\|png\)$/ff.'$cpm'/'}
+	2ff <$i | eval $cpm >$ffn
+}
